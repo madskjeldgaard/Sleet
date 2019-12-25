@@ -35,6 +35,13 @@ Sleet {
 		^modules
 	}
 
+	// TODO
+	get{
+		var module;
+
+		^module
+	}
+
 	makeSynthDefs{|numChannels=2|
 
 		// Category
