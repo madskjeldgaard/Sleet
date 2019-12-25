@@ -1,5 +1,5 @@
 Sleet {
-	var <quarkpath, <modules, <synthdefs;
+	var <quarkpath, <modules, <synthdefs, <list;
 
 	*new { | numChannels=2, argb|
 		^super.new.init( numChannels, argb );
@@ -8,9 +8,11 @@ Sleet {
 	init { | numChannels, argb |
 		quarkpath = Quark("Sleet").localPath;
 		modules = IdentityDictionary.new;
+		list=IdentityDictionary.new;
 
 		this.loadModulesToDict(numChannels);
 		this.makeSynthDefs(numChannels);
+		this.makeList();
 	}
 
 	loadModulesToDict{|numChannels|
@@ -35,11 +37,20 @@ Sleet {
 		^modules
 	}
 
-	// TODO
-	get{
-		var module;
+	get{|name|
+		^list[name]
+	}
 
-		^module
+	makeList{
+		// Category
+		modules.keysValuesDo{|category, catContent|
+			// Modules in category
+			catContent.keysValuesDo{|moduleName, moduleContent|
+				list.put(moduleName, moduleContent)
+			}
+		};
+
+		^list
 	}
 
 	makeSynthDefs{|numChannels=2|
