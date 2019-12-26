@@ -1,11 +1,11 @@
 Sleet {
 	var <quarkpath, <modules, <synthdefs, <list;
 
-	*new { | numChannels=2, argb|
-		^super.new.init( numChannels, argb );
+	*new { | numChannels=2|
+		^super.new.init( numChannels );
 	}
 
-	init { | numChannels, argb |
+	init { | numChannels |
 		quarkpath = Quark("Sleet").localPath;
 		modules = IdentityDictionary.new;
 		list=IdentityDictionary.new;
@@ -53,6 +53,12 @@ Sleet {
 		^list
 	}
 
+	storeSynths{
+		synthdefs.do{|sd|
+			sd.store
+		}
+	}
+
 	makeSynthDefs{|numChannels=2|
 
 		// Category
@@ -71,7 +77,7 @@ Sleet {
 					var sig = SynthDef.wrap(moduleContent, prependArgs: [insig]);
 
 					XOut.ar(out, wet, sig);
-				});
+				}).add;
 
 				// Add to global synthdef array of instance
 				synthdefs = synthdefs.add(def);

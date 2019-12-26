@@ -4,43 +4,57 @@ categories:: Undocumented classes
 related:: Classes/SomeRelatedClass, Reference/SomeRelatedStuff, etc.
 
 DESCRIPTION::
-Convenience class and package containing tools for organizing sound effe
+Sleet contains a library of effect "modules" - synth functions that is - which are delivered in convenient formats for use in both link::Classes/NodeProxy:: based code and as SynthDefs.
+
+These modules are all multi channel capable.
+code::
+// Create library in stereo
+z = Sleet.new(numChannels: 2);
+
+// All modules in one flat IdentityDictionary
+z.list;
+
+// All modules organized by category
+z.modules;
+
+// If you know what you are looking for, the get method is the simplest:
+z.get('chorus');
+::
 
 CLASSMETHODS::
 
 METHOD:: new
-(describe method here)
 
-ARGUMENT:: arga
-(describe argument here)
+ARGUMENT:: numChannels
 
-ARGUMENT:: argb
-(describe argument here)
-
-ARGUMENT:: argc
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
+returns:: a Sleet
 
 INSTANCEMETHODS::
-
-METHOD:: init
-(describe method here)
-
-ARGUMENT:: arga
-(describe argument here)
-
-ARGUMENT:: argb
-(describe argument here)
-
-ARGUMENT:: argc
-(describe argument here)
-
-returns:: (describe returnvalue here)
 
 EXAMPLES::
 
 code::
-(some example code)
+
+// Make the library stereo
+z = Sleet.new(numChannels: 2);
+
+// Simple example using Sleet to add fx to a panning PinkNoise source
+(
+	Ndef(\pinknoise, { Pan2.ar(PinkNoise.ar(0.5), SinOsc.kr(0.1)) });
+	Ndef(\pinknoise)[1] = \filter -> z.get('delay');
+	Ndef(\pinknoise).play;
+)
+
+// Now add a random spectral effect to the chain
+Ndef(\pinknoise)[2] = \filter -> z.modules[\spectral].choose;
+
+// Example using the SynthDefs: add a spectral binshift to a pattern
+(
+	Pfx(
+		Pbind(\dur, 0.125, \degree, Pwhite(0,10)),
+		\binshift2, 
+		\wet, 0.5 // All the Sleet SynthDefs contain a 'wet' argument
+	).play;
+)
 ::
+

@@ -2,7 +2,11 @@
 
 ### FX organization
 
-Convenience class and package containing tools for organizing sound effe
+Sleet contains a library of effect "modules" - synth functions that is -
+which are delivered in convenient formats for use in both NodeProxy
+based code and as SynthDefs.
+
+These modules are all multi channel capable.
 
 ### Installation
 

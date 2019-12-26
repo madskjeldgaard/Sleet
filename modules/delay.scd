@@ -7,7 +7,7 @@
 				CombC.ar(
 					in[cNum], 
 					1, 
-					{rrand(0.98,1.0)} * delay.linlin(0.0,1.0,0.001,1.0), 
+					{rrand(0.98,1.0)} * delay.linlin(0.0,1.0,0.005,1.0), 
 					delayfb.linexp(0.0,1.0,1.0,8.0)
 				)
 			})
