@@ -8,6 +8,8 @@ based code and as SynthDefs.
 
 These modules are all multi channel capable.
 
+See the Sleet helpfile for examples and explanations.
+
 ### Installation
 
 Open up SuperCollider and evaluate the following line of code:
