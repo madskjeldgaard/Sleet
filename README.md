@@ -10,6 +10,8 @@ These modules are all multi channel capable.
 
 See the Sleet helpfile for examples and explanations.
 
+This project is heavily inspired by the way [SuperDirt](https://github.com/musikinformatik/SuperDirt) is organized.
+
 ### Installation
 
 Open up SuperCollider and evaluate the following line of code:
