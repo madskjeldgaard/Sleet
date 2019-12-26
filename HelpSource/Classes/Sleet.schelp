@@ -1,10 +1,10 @@
 TITLE:: Sleet
 summary:: FX organization
 categories:: Sleet
-related:: Classes/NodeProxy 
+related:: Reference/NodeProxy_roles, Classes/NodeProxy 
 
 DESCRIPTION::
-Sleet contains a library of effect "modules" - synth functions that is - which are delivered in convenient formats for use in both link::Classes/NodeProxy:: based code and as SynthDefs.
+Sleet contains a library of effect "modules" - synth functions that is - which are delivered in convenient formats for use in both link::Reference/NodeProxy_roles:: based code and as SynthDefs.
 
 A design goal for this project was to make an effect library which was as easy to use in multi channel situations as in stereo and mono.
 
@@ -26,7 +26,7 @@ strong:: Naming convention ::
 
 All SynthDefs have a suffix signifying the number of channels they were made for, eg. \binshift17 is a 17 channel bin shifter
 
-This is not the case for the "modules" found in link::#-list:: and link::#-modules::. These have no suffix and a 17 channel binshifter is just called \binshift
+This is not the case for the "modules" found in link::#-list:: and link::#-modules:: meant for use with link::Classes/NodeProxy:: and link::Reference/NodeProxy_roles::. These have no suffix and a 17 channel binshifter is just called \binshift
 
 CLASSMETHODS::
 
