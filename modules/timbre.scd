@@ -2,14 +2,27 @@
 	"loading timbre.scd".poststamped;
 
 	(
+		// From SonicPi via SuperDirt
+		octer: {|in, octer=0.5, octersub=0.0, octersubsub=0.0|
+			var sig, oct1, oct2, oct3, sub;
+			sig = in;
+			oct1 = 2.0 * LeakDC.ar( abs(sig) );
+			sub = LPF.ar(sig, 440);
+			oct2 = ToggleFF.ar(sub);
+			oct3 = ToggleFF.ar(oct2);
+			sig = SelectX.ar(octer, [sig, octer * oct1, DC.ar(0)]);
+			sig = sig + (octersub * oct2 * sub) + (octersubsub * oct3 * sub);
+			sig
+		},
+
 		freqshift: {|in, freq=0.01, phase=0| 
 			Array.fill(numchans, {|cNum|
-				FreqShift.ar(in[cNum], freq * {rrand(0.95,1.0)},  phase: phase * {rrand(2pi,-2pi)})
+				FreqShift.ar(in[cNum], freq.linexp(0.0,1.0,0.00001,100.0) * {rrand(0.95,1.0)},  phase: phase * {rrand(2pi,-2pi)})
 			})
 		},
 
 		ring: { |in, ringf = 0.5|
-			var mod = SinOsc.ar(ringf);
+			var mod = SinOsc.ar(ringf.linexp(0.0,1.0,0.001,5000.0));
 			ring1(in, mod);
 		},
 		// from SuperDirt
