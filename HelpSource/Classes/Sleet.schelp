@@ -28,7 +28,9 @@ All SynthDefs have a suffix signifying the number of channels they were made for
 
 This is not the case for the "modules" found in link::#-list:: and link::#-modules:: meant for use with link::Classes/NodeProxy:: and link::Reference/NodeProxy_roles::. These have no suffix and a 17 channel binshifter is just called \binshift
 
-strong:: Normalized arguments ::
+note:: 
+All synth parameters are normalized to values between 0.0 to 1.0
+::
 
 CLASSMETHODS::
 
