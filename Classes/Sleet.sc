@@ -1,12 +1,12 @@
 Sleet {
-	var <quarkpath, <modules, <synthdefs, <list;
+	var <classpath, <modules, <synthdefs, <list;
 
 	*new { | numChannels=2|
 		^super.new.init( numChannels );
 	}
 
 	init { | numChannels |
-		quarkpath = Quark("Sleet").localPath;
+		classpath = Main.packages.asDict.at('Sleet');
 		modules = IdentityDictionary.new;
 		list=IdentityDictionary.new;
 
@@ -16,15 +16,15 @@ Sleet {
 	}
 
 	loadModulesToDict{|numChannels|
-		var folder = quarkpath +/+ "modules";
+		var folder = classpath +/+ "modules";
 
 		// Iterate over a folder of files containing sleet modules
-		PathName(folder).filesDo{|f| 
+		PathName(folder).filesDo{|f|
 			var ext = f.extension;
 			var name = f.fileNameWithoutExtension.asSymbol;
 
 			// Only normal SuperCollider files
-			if(ext == "scd", { 
+			if(ext == "scd", {
 				var contents;
 				"found module file: %".format(name).poststamped;
 
