@@ -65,6 +65,28 @@ z.modules.keys;
 z.modules[\delay].choose; 
 ::
 
+method:: postInfo
+Get information about module names and their arguments
+
+code::
+z.postInfo
+::
+
+method:: crawl
+Mostly used internally to crawl through the modules
+
+code::
+(
+var func = {|moduleName, moduleContent|
+	[moduleName, moduleContent].postln
+};
+
+z.crawl(func)
+)
+::
+
+argument:: doFunction
+A function which is passed the moduleName and moduleContent as arguments
 EXAMPLES::
 
 code::

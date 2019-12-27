@@ -15,6 +15,26 @@ Sleet {
 		this.makeList();
 	}
 
+	crawl{ |doFunction|
+		modules.keysValuesDo{|category, categoryContent|
+			// Modules
+			if(categoryContent.size > 0, {
+				categoryContent.keysValuesDo{|moduleName, moduleContent|
+					doFunction.value(moduleName, moduleContent)	
+				}
+			})
+		}
+	}
+
+	postInfo{
+		// Categories
+		"These are the modules available in Sleet right now:".poststamped;
+		this.crawl({|moduleName, moduleContent|
+			( "\t\t\t" ++ moduleName).postln;
+			moduleContent.argNames.do{|a| "\t\t\t\targ: %".format(a).postln};
+		})
+	}
+
 	loadModulesToDict{|numChannels|
 		var folder = classpath +/+ "modules";
 
