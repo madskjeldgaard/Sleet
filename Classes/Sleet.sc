@@ -26,7 +26,7 @@ Sleet {
 			// Only normal SuperCollider files
 			if(ext == "scd", {
 				var contents;
-				"found module file: %".format(name).poststamped;
+				//"found module file: %".format(name).poststamped;
 
 				contents = f.fullPath.load.value(numChannels);
 
@@ -69,7 +69,7 @@ Sleet {
 				var def, defname;
 				defname = moduleName.asString ++ numChannels;
 
-				"loading module % from category % ".format(moduleName, category).poststamped;
+				//"loading module % from category % ".format(moduleName, category).poststamped;
 
 				// Create synthdef
 				def = SynthDef(defname.asSymbol, { |in, out, wet=1.0|
@@ -82,7 +82,7 @@ Sleet {
 				// Add to global synthdef array of instance
 				synthdefs = synthdefs.add(def);
 
-				"SynthDef added: SynthDef('%')".format(defname).poststamped;
+				//"SynthDef added: SynthDef('%')".format(defname).poststamped;
 
 			}
 		}
