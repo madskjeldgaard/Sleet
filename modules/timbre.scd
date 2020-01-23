@@ -2,23 +2,39 @@
 	"loading timbre.scd".poststamped;
 
 	(
-		freqshift: {|in, freq=0.01, phase=0| 
+		freqshift: {|in, freq=0.01, phase=0|
 			Array.fill(numchans, {|cNum|
 				FreqShift.ar(in[cNum], freq * {rrand(0.95,1.0)},  phase: phase * {rrand(2pi,-2pi)})
 			})
 		},
+
+		conv: { | in, freq = 220, delaytime = 0.5, decaytime = 1.0 |
+	        Array.fill(numchans, {|cNum|
+		        Convolution.ar(
+					in[cNum], 
+				    AllpassC.ar(
+						in[cNum] * LFSaw.ar(freq), 
+						1.0, 
+						delaytime, 
+						decaytime
+					),
+			        framesize: 1024,
+					mul: 0.4
+				)
+	        })
+        },
 
 		ring: { |in, ringf = 0.5|
 			var mod = SinOsc.ar(ringf);
 			ring1(in, mod);
 		},
 		// from SuperDirt
-		triode: {|in, triode=0.5|		
+		triode: {|in, triode=0.5|
 			var sc = triode * 10 + 1e-3;
 			var sig = in;
 
 			(sig * (sig > 0)) + (tanh(sig * sc) / sc * (sig < 0));
-		},		
+		},
 		// stolen from SuperDirt
 		shaper: { |in, shape = 0|
 			var signal = in;
@@ -35,12 +51,12 @@
 		bitcrush: { |in, crush = 0.1|
 			var signal = in;
 			signal.round(0.5 ** (crush.linlin(0.0,1.0,16,2)-1));
-		},			
+		},
 		waveloss: {|in, drop=0.5|
 			WaveLoss.ar(in, drop * 40, 40, 2)
-		},
+		}/*,
 		lofi: {|in, lofirate=0.5, lofismooth=0.9|
 			SmoothDecimator.ar(in, lofirate.linexp(0.0,1.0,44100,512),  smoothing: lofismooth,  mul: 1.0,  add: 0)
-		}
+		}*/
 	)
 }
