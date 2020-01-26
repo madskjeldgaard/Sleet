@@ -1,11 +1,11 @@
 (
   name: "Sleet",
   summary: "FX organization",
-  version: "0.02",
+  version: "0.03",
   schelp: "Sleet.schelp",
   dependencies: [],
   license: "GNU GPL v3.0",
   copyright: "madskjeldgaard",
   ext_dependency: "",
-  url: "https://github.com/madskjeldgaard/sleet"
+  url: "https://github.com/madskjeldgaard/Sleet"
 )
