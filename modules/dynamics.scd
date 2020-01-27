@@ -18,6 +18,11 @@
 			Array.fill(numchans, { | num |
 				CompanderD.ar(in[num], thresh, slopeBelow, slopeAbove, clamp, release)
 			})
+		},
+		dc: { | in, coef = 0.995 |
+			Array.fill(numchans, { | num |
+				LeakDC.ar(in[num], coef)
+			})
 		}
 	)
 }
