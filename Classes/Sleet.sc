@@ -1,8 +1,21 @@
+/*
+
+TODO: 
+- Add method to change number of channels
+
+*/
 Sleet {
+	classvar <singleton;
 	var <classpath, <modules, <synthdefs, <list, <numChannels;
 
 	*new { | numChannels=2|
-		^super.new.init( numChannels );
+		if(singleton.isNil, {
+			singleton = super.new.init( numChannels );
+		}, {
+			"Sleet instance already exists in .singleton".postln;
+		});
+
+		^singleton;
 	}
 
 	init { | numChans |
