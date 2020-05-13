@@ -9,10 +9,15 @@ Sleet {
 	var <classpath, <modules, <synthdefs, <list, <numChannels;
 
 	*new { | numChannels=2|
-		if(singleton.isNil, {
+		if(singleton.isNil or: { numChannels != singleton.numChannels }, {
+
+			if( numChannels != singleton.numChannels && singleton.notNil, { 
+				"Changing number of channels in Sleet singleton from % to %".format(singleton.numChannels, numChannels).poststamped 
+			});
+
 			singleton = super.new.init( numChannels );
 		}, {
-			"Sleet instance already exists in .singleton".postln;
+			"Sleet instance already exists in .singleton".poststamped;
 		});
 
 		^singleton;
@@ -128,14 +133,14 @@ Sleet {
 SleetPatcher {
 	var <nodeproxy, <chain, <sleet, <>firstIndex, <lastIndex=60;
 
-	*new { |addtonodeproxy, fxchain, sleetfx, patchFromIndex=50|
-		^super.new.init(addtonodeproxy, fxchain, sleetfx)
+	*new { |addtonodeproxy, fxchain, patchFromIndex=50|
+		^super.new.init(addtonodeproxy, fxchain, patchFromIndex)
 	}
 
-	init{|addtonodeproxy, fxchain, sleetfx, patchFromIndex=50|
+	init{|addtonodeproxy, fxchain, patchFromIndex|
 		nodeproxy = addtonodeproxy;
 		chain = fxchain;
-		sleet = sleetfx;
+		sleet = Sleet.new(numChannels:nodeproxy.numChannels );
 		firstIndex = patchFromIndex;
 
 		if(this.channelsEqual.not, {
