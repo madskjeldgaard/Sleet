@@ -1,14 +1,33 @@
+/*
+
+TODO: 
+- Add method to change number of channels
+
+*/
 Sleet {
-	var <classpath, <modules, <synthdefs, <list;
+	classvar <singleton;
+	var <classpath, <modules, <synthdefs, <list, <numChannels;
 
 	*new { | numChannels=2|
-		^super.new.init( numChannels );
+		if(singleton.isNil or: { numChannels != singleton.numChannels }, {
+
+			if( numChannels != singleton.numChannels && singleton.notNil, { 
+				"Changing number of channels in Sleet singleton from % to %".format(singleton.numChannels, numChannels).poststamped 
+			});
+
+			singleton = super.new.init( numChannels );
+		}, {
+			"Sleet instance already exists in .singleton".poststamped;
+		});
+
+		^singleton;
 	}
 
-	init { | numChannels |
+	init { | numChans |
 		classpath = Main.packages.asDict.at('Sleet');
 		modules = IdentityDictionary.new;
 		list=IdentityDictionary.new;
+		numChannels=numChans;
 
 		this.loadModulesToDict(numChannels);
 		this.makeSynthDefs(numChannels);
@@ -107,5 +126,63 @@ Sleet {
 			}
 		}
 
+	}
+}
+
+// Dynamically switch between fx chains
+SleetPatcher {
+	var <nodeproxy, <chain, <sleet, <>firstIndex, <lastIndex=60;
+
+	*new { |addtonodeproxy, fxchain, patchFromIndex=50|
+		^super.new.init(addtonodeproxy, fxchain, patchFromIndex)
+	}
+
+	init{|addtonodeproxy, fxchain, patchFromIndex|
+		nodeproxy = addtonodeproxy;
+		chain = fxchain;
+		sleet = Sleet.new(numChannels:nodeproxy.numChannels );
+		firstIndex = patchFromIndex;
+
+		if(this.channelsEqual.not, {
+			"Incompatible channel numbers. Sleet has % channels and Nodeproxy has % channels".format(
+				sleet.numChannels, nodeproxy.numChannels
+			).error 
+		}, {
+			this.addChain(chain)
+		});
+	}
+
+	clearChainFromProxy{
+		(firstIndex..lastIndex).do{|index|
+			nodeproxy[index] = nil
+		}
+	}
+
+	channelsEqual{
+		^(nodeproxy.numChannels == sleet.numChannels)	
+	}
+
+	addChain{|fxchain|
+		this.clearChainFromProxy;
+		chain = fxchain;
+
+		// Add chain
+		chain.do{|fxname, fxindex|
+			var index = firstIndex + fxindex; // Offset index
+
+			"Adding % to slot % in nodeproxy".format(fxname, index).postln;
+			// nodeproxy[index].postln;
+			nodeproxy[index] = \filter -> sleet.get(fxname.asSymbol);
+			// nodeproxy[index] = \filter -> {|in| in};
+
+		};
+
+		// Set last index for last fx
+		// This is used when adding new fx chain
+		lastIndex = firstIndex + chain.size;
+	}
+
+	addChainShuffled{|fxchain|
+		this.addChain(fxchain.scrambled)
 	}
 }

@@ -60,12 +60,27 @@
 
 			sig
 		},
-		timemachine: {|in, offset=0, reclvl=0.5, prelvl=0.5, timerate=0.5, fb=0.25|
+		timemachine: {|in, offset=0, reclvl=0.5, prelvl=0.5, timerate=0.5, fb=0.25, record=1, jumpToStart=1|
 			var local = LocalBuf(44100 * 16, numChannels: numchans).clear;
 			var sig;
 			var feedback = LocalIn.ar(fb * in, numChannels: numchans).tanh;
 
-			RecordBuf.ar(in + feedback, local, offset, reclvl, prelvl,  run: 1.0,  loop: 1.0,  trigger: 1.0,  doneAction: 0);
+			RecordBuf.ar(in + feedback, local, offset, reclvl, prelvl,  run: record,  loop: 1.0,  trigger: jumpToStart,  doneAction: 0);
+
+			sig = PlayBuf.ar(numchans, local, timerate.linlin(0.0,1.0,(-10.0),10.0), 1.0, 0.0, 1.0, doneAction: 0);
+			sig = LeakDC.ar(sig);
+
+			LocalOut.ar(sig);
+
+			sig
+		},
+		// Same as above but using external buffer which you can then play with in patterns, etc.
+		timemachine_ext: {|in, buffer=0, offset=0, reclvl=0.5, prelvl=0.5, timerate=0.5, fb=0.25, record=1, jumpToStart=1|
+			var local = buffer;
+			var sig;
+			var feedback = LocalIn.ar(fb * in, numChannels: numchans).tanh;
+
+			RecordBuf.ar(in + feedback, local, offset, reclvl, prelvl,  run: record,  loop: 1.0,  trigger: jumpToStart,  doneAction: 0);
 
 			sig = PlayBuf.ar(numchans, local, timerate.linlin(0.0,1.0,(-10.0),10.0), 1.0, 0.0, 1.0, doneAction: 0);
 			sig = LeakDC.ar(sig);
