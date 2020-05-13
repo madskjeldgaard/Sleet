@@ -1,0 +1,61 @@
+TITLE:: SleetPatcher
+summary:: Dynamic fx patching
+categories:: Sleet
+related:: Reference/NodeProxy_roles, Classes/NodeProxy 
+
+DESCRIPTION::
+
+SleetPatcher is a convenience class that makes it easy to add Sleet fx chains to a NodeProxy via NodeProxy roles.
+
+code::
+// Sinewave Ndef as source
+Ndef(\sine, {
+	SinOsc.ar([440,441], mul: 0.25)
+}).play;
+
+// Create an fx chain, put it in the NodeProxy's indexes starting at 10
+// If a Sleet instance has not been created yet, this will make one
+p = SleetPatcher.new(
+	Ndef(\sine), 
+	fxchain: [\delay, \pitchshift, \freqshift], 
+	patchFromIndex:10
+);
+::
+
+CLASSMETHODS::
+
+METHOD:: new
+
+Create a new instance of SleetPatcher.
+
+This adds the fx to the nodeproxy in addtonodeproxy.
+
+If an instance of Sleet exists, it will use that instance, otherwise it will create a new one based on the nodeproxies number of channels.
+
+ARGUMENT::addtonodeproxy 
+ARGUMENT::fxchain 
+ARGUMENT::patchFromIndex
+
+returns:: a SleetPatcher
+
+INSTANCEMETHODS::
+
+method:: clearChainFromProxy
+
+code::
+::
+
+method:: addChain
+
+code::
+::
+
+method:: addChainShuffled
+
+code::
+::
+
+EXAMPLES::
+
+code::
+::
