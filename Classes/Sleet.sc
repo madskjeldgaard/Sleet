@@ -113,23 +113,24 @@ Sleet {
 
 // Dynamically switch between fx chains
 SleetPatcher {
-	var <nodeproxy, chain, <sleet, <firstIndex=50, <lastIndex=60;
+	var <nodeproxy, <chain, <sleet, <>firstIndex, <lastIndex=60;
 
-	*new { |addtonodeproxy, fxchain, sleetfx|
+	*new { |addtonodeproxy, fxchain, sleetfx, patchFromIndex=50|
 		^super.new.init(addtonodeproxy, fxchain, sleetfx)
 	}
 
-	init{|addtonodeproxy, fxchain, sleetfx|
+	init{|addtonodeproxy, fxchain, sleetfx, patchFromIndex=50|
 		nodeproxy = addtonodeproxy;
 		chain = fxchain;
 		sleet = sleetfx;
+		firstIndex = patchFromIndex;
 
 		if(this.channelsEqual.not, {
 			"Incompatible channel numbers. Sleet has % channels and Nodeproxy has % channels".format(
 				sleet.numChannels, nodeproxy.numChannels
 			).error 
 		}, {
-			this.addChain
+			this.addChain(chain)
 		});
 	}
 
@@ -143,8 +144,9 @@ SleetPatcher {
 		^(nodeproxy.numChannels == sleet.numChannels)	
 	}
 
-	addChain{
+	addChain{|fxchain|
 		this.clearChainFromProxy;
+		chain = fxchain;
 
 		// Add chain
 		chain.do{|fxname, fxindex|
@@ -162,6 +164,7 @@ SleetPatcher {
 		lastIndex = firstIndex + chain.size;
 	}
 
-	// TODO
-	addShuffledChain{}
+	addChainShuffled{|fxchain|
+		this.addChain(fxchain.scrambled)
+	}
 }
