@@ -172,7 +172,7 @@ SleetPatcher {
 
 			"Adding % to slot % in nodeproxy".format(fxname, index).postln;
 			// nodeproxy[index].postln;
-			nodeproxy[index] = \filter -> sleet.get(fxname.asSymbol);
+			nodeproxy[index] = \kfilter -> sleet.get(fxname.asSymbol);
 			// nodeproxy[index] = \filter -> {|in| in};
 
 		};
