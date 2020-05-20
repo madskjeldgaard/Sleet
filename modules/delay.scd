@@ -2,15 +2,52 @@
 	"loading delay.scd".poststamped;
 
 	(
-		delay: {|in, delay=0.1, delayfb=0.33|
-			Array.fill(numchans, {|cNum|
-				CombC.ar(
-					in[cNum], 
-					1, 
-					{rrand(0.98,1.0)} * delay.linlin(0.0,1.0,0.005,1.0), 
-					delayfb.linexp(0.0,1.0,1.0,8.0)
-				)
-			})
+		stereodelay: {|in, delay=0.1, delayfb=0.33, decaytime=0.5, delaywidth=0.1, modFreq=0.1, modAmount=0.25, fblowcut=0.5|
+			var localIn = LocalIn.ar(numChannels: numchans,  default: 0.0);
+			var output = Array.fill(numchans, {|cNum|
+				var sig, fb;
+
+				// Random scalar to add variation
+				var randScale = Rand(0.95,1.0);
+
+				// Every other channel, scale the delay value according to the delaywidth arg
+				var delayScale = if(cNum.even, { delaywidth.linlin(0.0,1.0,0.5,1.5) }, { 1.0 });
+
+				// The final, scaled delayVal to be fed to the modulator 
+				var delayVal = lag3(delayScale * randScale * delay.linlin(0.0,1.0,0.0001,2.0));
+
+				// Delaytime modulator
+				var phase = cNum.linlin(0,numchans-1,-8pi, 8pi);
+				var lfofreq = (randScale * modFreq.linexp(0.0,1.0,0.0001,10.0)).lag3;
+				var minModamount = modAmount.linlin(0.0,1.0,1.0,0.001).lag * delayVal;
+				var maxModamount = delayVal;
+				
+				delayVal = LFTri.kr(
+					Rand(0.99,1.0) * lfofreq, 
+					phase
+				).linlin(-1.0,1.0, minModamount, maxModamount);
+
+				// Feedback 
+				// goes from 0 to 110%
+				fb = (delayfb * 1.1 * localIn[cNum]).tanh; // tanh for "limiting"
+				fb = DelayL.ar(fb, 0.2, delaytime: Rand(0.1,0.2)); // Avoid phase problems that sound "flat"
+				fb = LPF.ar(fb, Rand(0.99,1.0)*fblowcut.linexp(0.0,1.0,40.0,12000.0));
+
+				// The final delay
+				sig = AllpassC.ar(
+					in[cNum] + fb, 
+					2, 
+					delayVal,
+					decaytime.linlin(0.0,1.0, 0.1,3.0).lag3
+				);
+
+				// Filter out potential dc
+				LeakDC.ar(sig)
+			});
+
+			LocalOut.ar(output);
+
+			output
 		},
 		// Phaser taken from SuperDirt
 		// https://github.com/musikinformatik/SuperDirt/blob/develop/synths/core-synths.scd
