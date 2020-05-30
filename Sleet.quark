@@ -1,7 +1,7 @@
 (
   name: "Sleet",
   summary: "FX organization",
-  version: "0.04",
+  version: "0.05",
   schelp: "Sleet.schelp",
   dependencies: [],
   license: "GNU GPL v3.0",
