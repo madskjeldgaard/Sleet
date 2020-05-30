@@ -2,7 +2,7 @@
 	"loading delay.scd".poststamped;
 
 	(
-		stereodelay: {|in, delay=0.1, delayfb=0.33, decaytime=0.5, delaywidth=0.1, modFreq=0.1, modAmount=0.25, fblowcut=0.5|
+		vortexdelay: {|in, delay=0.1, delayfb=0.33, decaytime=0.5, delaywidth=0.1, modFreq=0.1, modAmount=0.25, fblowcut=0.5|
 			var localIn = LocalIn.ar(numChannels: numchans,  default: 0.0);
 			var output = Array.fill(numchans, {|cNum|
 				var sig, fb;
